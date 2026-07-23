@@ -40,6 +40,9 @@ const AdminImport = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loggingIn, setLoggingIn] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [sendingReset, setSendingReset] = useState(false);
 
   const [fileName, setFileName] = useState("");
   const [rows, setRows] = useState<ParsedRow[]>([]);
@@ -77,6 +80,23 @@ const AdminImport = () => {
     await supabase.auth.signOut();
     setRows([]);
     setFileName("");
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSendingReset(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail.trim(), {
+        redirectTo: `${window.location.origin}/#/admin`,
+      });
+      if (error) throw error;
+      toast.success("Check your email for a password reset link.");
+      setShowForgotPassword(false);
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to send reset email.");
+    } finally {
+      setSendingReset(false);
+    }
   };
 
   const handleFile = (file: File) => {
@@ -147,6 +167,45 @@ const AdminImport = () => {
   }
 
   if (!session) {
+    if (showForgotPassword) {
+      return (
+        <div className="min-h-screen flex items-center justify-center pt-24 px-4">
+          <form onSubmit={handleForgotPassword} className="w-full max-w-sm space-y-5 border border-border p-8">
+            <h1 className="font-heading text-2xl font-light">Reset Password</h1>
+            <p className="font-body text-sm text-muted-foreground">
+              Enter your admin email and we'll send a reset link.
+            </p>
+            <div>
+              <label className="font-body text-xs tracking-[0.15em] uppercase text-muted-foreground mb-2 block">
+                Email
+              </label>
+              <input
+                type="email"
+                required
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                className="w-full border border-border bg-transparent px-4 py-3 font-body text-sm focus:border-primary focus:outline-none"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={sendingReset}
+              className="w-full font-body text-sm tracking-[0.2em] uppercase bg-accent text-accent-foreground py-3 hover:opacity-90 transition-opacity disabled:opacity-50"
+            >
+              {sendingReset ? "Sending..." : "Send Reset Link"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowForgotPassword(false)}
+              className="w-full font-body text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-primary"
+            >
+              Back to Sign In
+            </button>
+          </form>
+        </div>
+      );
+    }
+
     return (
       <div className="min-h-screen flex items-center justify-center pt-24 px-4">
         <form onSubmit={handleLogin} className="w-full max-w-sm space-y-5 border border-border p-8">
@@ -180,6 +239,16 @@ const AdminImport = () => {
             className="w-full font-body text-sm tracking-[0.2em] uppercase bg-accent text-accent-foreground py-3 hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             {loggingIn ? "Signing in..." : "Sign In"}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setResetEmail(email);
+              setShowForgotPassword(true);
+            }}
+            className="w-full font-body text-xs tracking-[0.15em] uppercase text-muted-foreground hover:text-primary"
+          >
+            Forgot Password?
           </button>
         </form>
       </div>
