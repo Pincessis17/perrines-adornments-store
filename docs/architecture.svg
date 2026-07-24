@@ -1,0 +1,57 @@
+<svg viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg" font-family="Georgia, 'Times New Roman', serif">
+  <rect width="900" height="420" fill="#faf6f0"/>
+
+  <!-- Vercel (hosting) -->
+  <rect x="30" y="150" width="150" height="90" rx="4" fill="none" stroke="#3a2f28" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="105" y="185" text-anchor="middle" font-size="13" fill="#3a2f28" font-weight="bold">Vercel</text>
+  <text x="105" y="204" text-anchor="middle" font-size="11" fill="#6b5d52">static hosting</text>
+  <text x="105" y="220" text-anchor="middle" font-size="11" fill="#6b5d52">(CI on push)</text>
+
+  <!-- Browser / React app -->
+  <rect x="270" y="130" width="220" height="130" rx="4" fill="#3a2f28"/>
+  <text x="380" y="168" text-anchor="middle" font-size="15" fill="#faf6f0" font-weight="bold">Browser</text>
+  <text x="380" y="190" text-anchor="middle" font-size="12" fill="#e8ddd4">React + TypeScript SPA</text>
+  <text x="380" y="208" text-anchor="middle" font-size="12" fill="#e8ddd4">Shop · Admin · Community</text>
+  <text x="380" y="226" text-anchor="middle" font-size="12" fill="#e8ddd4">Contact / Order forms</text>
+  <text x="380" y="244" text-anchor="middle" font-size="11" fill="#b08d57">HashRouter</text>
+
+  <!-- Supabase -->
+  <rect x="600" y="30" width="240" height="130" rx="4" fill="none" stroke="#3a2f28" stroke-width="1.5"/>
+  <text x="720" y="60" text-anchor="middle" font-size="14" fill="#3a2f28" font-weight="bold">Supabase</text>
+  <text x="720" y="82" text-anchor="middle" font-size="11" fill="#6b5d52">Postgres — products, orders</text>
+  <text x="720" y="100" text-anchor="middle" font-size="11" fill="#6b5d52">Row Level Security</text>
+  <text x="720" y="118" text-anchor="middle" font-size="11" fill="#6b5d52">Auth (admin sign-in)</text>
+  <text x="720" y="136" text-anchor="middle" font-size="11" fill="#6b5d52">Storage of live catalog</text>
+
+  <!-- EmailJS -->
+  <rect x="600" y="220" width="240" height="110" rx="4" fill="none" stroke="#3a2f28" stroke-width="1.5"/>
+  <text x="720" y="250" text-anchor="middle" font-size="14" fill="#3a2f28" font-weight="bold">EmailJS</text>
+  <text x="720" y="272" text-anchor="middle" font-size="11" fill="#6b5d52">Client-side transactional email</text>
+  <text x="720" y="290" text-anchor="middle" font-size="11" fill="#6b5d52">Checkout, Contact, Custom Order,</text>
+  <text x="720" y="308" text-anchor="middle" font-size="11" fill="#6b5d52">Refurbishment, Community forms</text>
+
+  <!-- Owner inbox -->
+  <rect x="660" y="360" width="120" height="45" rx="4" fill="#e8ddd4" stroke="#3a2f28" stroke-width="1"/>
+  <text x="720" y="388" text-anchor="middle" font-size="11" fill="#3a2f28">Owner's Inbox</text>
+
+  <!-- Arrows -->
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#b08d57"/>
+    </marker>
+  </defs>
+
+  <line x1="180" y1="195" x2="268" y2="195" stroke="#b08d57" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="224" y="187" text-anchor="middle" font-size="10" fill="#6b5d52">serves</text>
+
+  <line x1="492" y1="170" x2="598" y2="110" stroke="#b08d57" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="560" y="140" text-anchor="middle" font-size="10" fill="#6b5d52">read / write</text>
+  <text x="560" y="153" text-anchor="middle" font-size="10" fill="#6b5d52">(anon key + RLS)</text>
+
+  <line x1="492" y1="220" x2="598" y2="265" stroke="#b08d57" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="560" y="238" text-anchor="middle" font-size="10" fill="#6b5d52">form submit</text>
+
+  <line x1="720" y1="330" x2="720" y2="358" stroke="#b08d57" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <text x="450" y="20" text-anchor="middle" font-size="12" fill="#6b5d52" font-style="italic">No custom backend — Supabase + EmailJS handle data and email directly from the client</text>
+</svg>
