@@ -5,6 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
+import { getErrorMessage } from "@/lib/utils";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Index from "./pages/Index";
@@ -46,8 +47,8 @@ const PasswordRecoveryOverlay = ({ onDone }: { onDone: () => void }) => {
       toast.success("Password updated — you're signed in.");
       window.location.hash = "/admin";
       onDone();
-    } catch (error: any) {
-      toast.error(error?.message || "Failed to update password.");
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Failed to update password."));
     } finally {
       setIsSaving(false);
     }

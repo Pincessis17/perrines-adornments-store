@@ -2,6 +2,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import emailjs from "@emailjs/browser";
 import refurbishmentImg from "@/assets/refurbishment.jpg";
+import { getErrorMessage } from "@/lib/utils";
 
 const Refurbishment = () => {
   const [form, setForm] = useState({ name: "", email: "", phone: "", description: "", itemType: "" });
@@ -29,9 +30,9 @@ const Refurbishment = () => {
 
       toast.success("Refurbishment request submitted! We'll be in touch within 48 hours.");
       setForm({ name: "", email: "", phone: "", description: "", itemType: "" });
-    } catch (error: any) {
+    } catch (error) {
       console.error("REFURBISHMENT SUBMIT ERROR:", error);
-      toast.error(`Failed to submit request: ${error?.message || error?.text || "Unknown error occurred"}`);
+      toast.error(`Failed to submit request: ${getErrorMessage(error)}`);
     } finally {
       setIsSubmitting(false);
     }

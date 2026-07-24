@@ -1,5 +1,13 @@
 # Perrine — Handcrafted Bead Artistry
 
+**[🔗 Live Demo](https://pincessis17-perrines-adornments-sto.vercel.app/)**
+
+![CI](https://github.com/Pincessis17/perrines-adornments-store/actions/workflows/ci.yml/badge.svg)
+![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-Postgres-3ECF8E?logo=supabase&logoColor=white)
+
 A full-stack e-commerce storefront for a handcrafted beaded bag/accessories brand, built with React, TypeScript, and Supabase. Live product catalog, cart, custom-order requests, refurbishment bookings, and a community lookbook, all backed by real form submissions and a live database.
 
 ## Features
@@ -11,6 +19,12 @@ A full-stack e-commerce storefront for a handcrafted beaded bag/accessories bran
 - **Community lookbook** — a masonry gallery of customer looks with likeable posts, plus a "share your look" submission form
 - **Admin bulk import** (`/admin`) — sign in as an admin and upload a CSV to bulk-create products; categories are picked up automatically from whatever's in the CSV's `category` column, so the Shop page's filters update without any code changes
 - **Responsive, animated UI** — built on shadcn/ui + Radix primitives with Tailwind CSS
+
+## Architecture
+
+![Architecture diagram](docs/architecture.svg)
+
+There's no custom backend — the React SPA talks directly to Supabase (data + auth, protected by Row Level Security) and to EmailJS (transactional email) from the client. Vercel serves the static build and rebuilds on every push to `main`.
 
 ## Tech Stack
 
@@ -86,4 +100,15 @@ src/
 5. Products are grouped into categories automatically — whatever string is in the `category` column becomes a filter option on the Shop page, with no code changes required.
 
 This is enforced with a Postgres RLS policy: only `authenticated` users can insert into `products`; anonymous visitors can still read the catalog but not modify it.
+
+## Database Schema
+
+The full schema (tables + Row Level Security policies) is versioned as SQL under `supabase/migrations/`, so the backend is reproducible from the repo alone — not dependent on the live project's current state. To spin up your own instance:
+
+```bash
+# with the Supabase CLI, pointed at your own project
+supabase db push
+```
+
+or run the files in `supabase/migrations/` manually in the Supabase SQL editor, in order.
 

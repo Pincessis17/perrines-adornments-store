@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Upload, Heart } from "lucide-react";
 import { toast } from "sonner";
 import emailjs from "@emailjs/browser";
+import { getErrorMessage } from "@/lib/utils";
 import productClutch from "@/assets/product-clutch.jpg";
 import productEvening from "@/assets/product-evening-bag.jpg";
 import aboutCraft from "@/assets/about-craft.jpg";
@@ -54,9 +55,9 @@ const Community = () => {
       setShareCaption("");
       setShareFile(null);
       setShowUpload(false);
-    } catch (error: any) {
+    } catch (error) {
       console.error("COMMUNITY SHARE SUBMIT ERROR:", error);
-      toast.error(`Failed to submit: ${error?.message || error?.text || "Unknown error occurred"}`);
+      toast.error(`Failed to submit: ${getErrorMessage(error)}`);
     } finally {
       setIsSubmitting(false);
     }

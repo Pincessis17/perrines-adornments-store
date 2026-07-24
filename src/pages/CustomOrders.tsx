@@ -3,6 +3,7 @@ import { Upload } from "lucide-react";
 import { toast } from "sonner";
 import emailjs from "@emailjs/browser";
 import FloatingBeads from "@/components/FloatingBeads";
+import { getErrorMessage } from "@/lib/utils";
 
 const CustomOrders = () => {
   const [form, setForm] = useState({ name: "", email: "", description: "", budget: "", timeline: "" });
@@ -34,9 +35,9 @@ const CustomOrders = () => {
       toast.success("Custom order request received! We'll reach out within 48 hours.");
       setForm({ name: "", email: "", description: "", budget: "", timeline: "" });
       setFiles([]);
-    } catch (error: any) {
+    } catch (error) {
       console.error("CUSTOM ORDER SUBMIT ERROR:", error);
-      toast.error(`Failed to send request: ${error?.message || error?.text || "Unknown error occurred"}`);
+      toast.error(`Failed to send request: ${getErrorMessage(error)}`);
     } finally {
       setIsSubmitting(false);
     }

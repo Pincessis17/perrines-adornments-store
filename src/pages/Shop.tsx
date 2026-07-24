@@ -3,22 +3,32 @@ import { useSearchParams } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import emailjs from "@emailjs/browser";
+import { deriveCategories, matchCategory } from "@/lib/categories";
+import { getErrorMessage } from "@/lib/utils";
 
-const DEFAULT_CATEGORIES = ["All", "Bags", "Belts", "Accessories", "Custom Orders"];
+type Product = {
+  id: number;
+  name: string;
+  category: string;
+  price: number;
+  image: string;
+};
+
+type CartItem = { product: Product; quantity: number };
 
 const Shop = () => {
   const [searchParams] = useSearchParams();
   const urlCategory = searchParams.get("category");
 
   const [active, setActive] = useState<string>("All");
-  const [products, setProducts] = useState<any[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [orderName, setOrderName] = useState("");
   const [orderEmail, setOrderEmail] = useState("");
   const [orderWhatsapp, setOrderWhatsapp] = useState("");
   const [orderQuantity, setOrderQuantity] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [cart, setCart] = useState<any[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   useEffect(() => {
@@ -39,19 +49,11 @@ const Shop = () => {
 
   // Category list is derived from whatever's actually in the database (plus "All"),
   // so newly-imported categories (e.g. via CSV upload) show up as filters automatically.
-  const categories = useMemo(() => {
-    const fromProducts = Array.from(
-      new Set(products.map((p) => p.category).filter(Boolean))
-    ).sort();
-    const merged = fromProducts.length > 0 ? fromProducts : DEFAULT_CATEGORIES.slice(1);
-    return ["All", ...merged];
-  }, [products]);
+  const categories = useMemo(() => deriveCategories(products), [products]);
 
   useEffect(() => {
-    if (urlCategory) {
-      const match = categories.find((c) => c.toLowerCase() === urlCategory.toLowerCase());
-      if (match) setActive(match);
-    }
+    const match = matchCategory(urlCategory, categories);
+    if (match) setActive(match);
   }, [urlCategory, categories]);
 
   useEffect(() => {
@@ -365,9 +367,9 @@ const Shop = () => {
                               setOrderName("");
                               setOrderEmail("");
                               setOrderWhatsapp("");
-                            } catch (error: any) {
+                            } catch (error) {
                               console.error("ORDER SUBMIT ERROR:", error);
-                              toast.error(`Failed to place order: ${error?.message || error?.text || "Unknown error occurred"}`);
+                              toast.error(`Failed to place order: ${getErrorMessage(error)}`);
                             } finally {
                               setIsSubmitting(false);
                             }

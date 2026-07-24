@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Instagram, Mail, Phone } from "lucide-react";
 import { toast } from "sonner";
 import emailjs from "@emailjs/browser";
+import { getErrorMessage } from "@/lib/utils";
 
 const Contact = () => {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -26,9 +27,9 @@ const Contact = () => {
       );
       toast.success("Message sent! We'll get back to you soon.");
       setForm({ name: "", email: "", message: "" });
-    } catch (error: any) {
+    } catch (error) {
       console.error("CONTACT SUBMIT ERROR:", error);
-      toast.error(`Failed to send message: ${error?.message || error?.text || "Unknown error occurred"}`);
+      toast.error(`Failed to send message: ${getErrorMessage(error)}`);
     } finally {
       setIsSubmitting(false);
     }

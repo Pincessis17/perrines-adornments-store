@@ -3,36 +3,10 @@ import Papa from "papaparse";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import type { Session } from "@supabase/supabase-js";
+import { parseAndValidate, missingColumns as getMissingColumns, type ParsedRow } from "@/lib/csvImport";
+import { getErrorMessage } from "@/lib/utils";
 
-type ParsedRow = {
-  name: string;
-  category: string;
-  price: number;
-  image: string;
-  _valid: boolean;
-  _error?: string;
-};
-
-const REQUIRED_COLUMNS = ["name", "category", "price"];
 const BATCH_SIZE = 500;
-
-function parseAndValidate(rows: Record<string, string>[]): ParsedRow[] {
-  return rows.map((row) => {
-    const name = (row.name || "").trim();
-    const category = (row.category || "").trim();
-    const priceRaw = (row.price || "").trim();
-    const image = (row.image || "").trim();
-    const price = Number(priceRaw);
-
-    if (!name) return { name, category, price, image, _valid: false, _error: "Missing name" };
-    if (!category) return { name, category, price, image, _valid: false, _error: "Missing category" };
-    if (!priceRaw || Number.isNaN(price) || price < 0) {
-      return { name, category, price, image, _valid: false, _error: "Invalid price" };
-    }
-
-    return { name, category, price, image, _valid: true };
-  });
-}
 
 const AdminImport = () => {
   const [session, setSession] = useState<Session | null>(null);
@@ -69,8 +43,8 @@ const AdminImport = () => {
     try {
       const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (error) throw error;
-    } catch (error: any) {
-      toast.error(error?.message || "Login failed");
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Login failed"));
     } finally {
       setLoggingIn(false);
     }
@@ -92,8 +66,8 @@ const AdminImport = () => {
       if (error) throw error;
       toast.success("Check your email for a password reset link.");
       setShowForgotPassword(false);
-    } catch (error: any) {
-      toast.error(error?.message || "Failed to send reset email.");
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Failed to send reset email."));
     } finally {
       setSendingReset(false);
     }
@@ -108,8 +82,7 @@ const AdminImport = () => {
       header: true,
       skipEmptyLines: true,
       complete: (results) => {
-        const columns = results.meta.fields?.map((f) => f.toLowerCase().trim()) || [];
-        const missing = REQUIRED_COLUMNS.filter((col) => !columns.includes(col));
+        const missing = getMissingColumns(results.meta.fields);
         if (missing.length > 0) {
           setMissingColumns(missing);
           return;
@@ -154,9 +127,9 @@ const AdminImport = () => {
       toast.success(`Imported ${imported} product${imported === 1 ? "" : "s"} across ${Object.keys(categoryCounts).length} categories.`);
       setRows([]);
       setFileName("");
-    } catch (error: any) {
+    } catch (error) {
       console.error("CSV IMPORT ERROR:", error);
-      toast.error(`Import failed: ${error?.message || "Unknown error occurred"}`);
+      toast.error(`Import failed: ${getErrorMessage(error)}`);
     } finally {
       setIsImporting(false);
     }
